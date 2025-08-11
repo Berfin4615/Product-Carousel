@@ -51,11 +51,12 @@
                         data.forEach(product => {
                             const productHtml = `
                                 <div class="banner-products">
-                                    <img src="${product.img}" alt="${product.name.trim()}" />
+                                    <img class="product-image" src="${product.img}" alt="${product.name.trim()}" />
                                     <div class="product-info">
                                         <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
-                                        <div class="product-price">${product.price} TL</div>
+                                        <div class="product-price"><b>${product.price} TL</b></div>
                                     </div>
+                                    <div class="padding-before-button"></div>
                                     <div class="product-add-button"><b>Sepete Ekle</b></div>
                                 </div>
                             `;
@@ -91,6 +92,9 @@
                             padding: 5px;
                             text-align: center;
                         }
+                        .product-image {
+                            margin-bottom:45px;
+                        }
                         .banner-title-container {
                           background-color: #fef6eb;
                           font-family: Quicksand-Bold;
@@ -101,10 +105,24 @@
                         .banner-title {
                           color: #f28e00;
                           font-size: 3rem;
-                          text-align: start;
                         }
                         .product-info {
+                            min-height: 70px; 
                             padding: 0 17px 17px;
+                            font-size: 12px;
+                            font-family: Poppins,"cursive";
+                            text-align: start;
+                        }
+                        .product-title {
+                            margin-bottom: 10px;
+                            color: #686868;
+                        }
+                        .product-price {
+                            color: #686868;
+                            font-size: 2.2rem;
+                        }
+                        .padding-before-button {
+                            height: 70px;
                         }
                         .product-add-button {
                             display: block;
