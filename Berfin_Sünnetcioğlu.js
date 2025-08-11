@@ -39,11 +39,10 @@
                 const buildHTML = () => {
                         const html = `
                             <div class="banner">
-                                <div class="container-products">
-                                    <div class="banner-title-container">
-                                        <h2 class="banner-title">Beğenebileceğinizi Düşündüklerimiz</h2>
-                                    </div>
+                                <div class="banner-title-container">
+                                    <h2 class="banner-title">Beğenebileceğinizi Düşündüklerimiz</h2>
                                 </div>
+                                <div class="container-products"></div>
                             </div>
                             `;
                         $('body').append(html);
@@ -54,10 +53,10 @@
                                 <div class="banner-products">
                                     <img src="${product.img}" alt="${product.name.trim()}" />
                                     <div class="product-info">
-                                        <div class="product-title">${product.brand} - ${product.name.trim()}</div>
+                                        <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
                                         <div class="product-price">${product.price} TL</div>
                                     </div>
-                                    <div class="product-add-button">Sepete Ekle</div>
+                                    <div class="product-add-button"><b>Sepete Ekle</b></div>
                                 </div>
                             `;
                             $('.container-products').append(productHtml);
@@ -68,6 +67,29 @@
                   const css = `
                         .banner {
                           padding: 0px 15px;
+                          width: 100%;
+                          margin-bottom: 1000px;
+                        }
+                        .container-products {
+                            display: flex;
+                            flex-wrap: nowrap;
+                            overflow: hidden;
+                            box-shadow: 15px 15px 30px 0 #ebebeb80;
+                            border-bottom-left-radius: 35px;
+                            border-bottom-right-radius: 35px;
+                            background-color: #fff;
+                            width: 4000px;
+                        }
+                        .banner-products {
+                            margin-right: 20px;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            width: 250px;
+                            border: 1px solid #ededed;
+                            border-radius: 10px;
+                            display: block;
+                            padding: 5px;
+                            text-align: center;
                         }
                         .banner-title-container {
                           background-color: #fef6eb;
@@ -79,15 +101,27 @@
                         .banner-title {
                           color: #f28e00;
                           font-size: 3rem;
+                          text-align: start;
                         }
-                        .banner-products {
-                            width: 100%;
-                            margin: 0 0 20px 3px;
-                            border: 1px solid #ededed;
-                            border-radius: 10px;
+                        .product-info {
+                            padding: 0 17px 17px;
                         }
                         .product-add-button {
+                            display: block;
+                            margin: 15px auto;
+                            padding: 10px;
+                            width: 200px;
+                            color: #f28e00;
+                            border-radius: 37.5px;
+                            background-color: #fff7ec;
+                            font-size: 1.4rem;
+                            font-family: Poppins,"cursive";
+                            text-align: center;
+                        }
+                        .product-add-button:hover {
+                            color: white;
                             background-color: #f28e00;
+                            cursor: pointer;
                         }
                   `;
                   $('<style>').html(css).appendTo('head');
