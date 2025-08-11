@@ -1,10 +1,4 @@
 (() => {
-    // This part downloads jQuery and adds it to the page. If I don't do this, my code won't work because the '$' won't be recognized without jQuery:
-    const script = document.createElement('script');
-    script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
-    script.onload = () => run(window.jQuery);
-    document.head.appendChild(script);
-
     // Check to see if I'm on the Home Page:
     if (window.location.pathname === "/") {
         console.log("You are in the right place!");
@@ -19,14 +13,21 @@
                 .then(data => {
                     console.log("Product list:", data);
                     window.productListFetched = true; 
+                    // This part downloads jQuery and adds it to the page. If I don't do this, my code won't work because the '$' won't be recognized without jQuery:
+                    const script = document.createElement('script');
+                    script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+                    // Added Data to Jquery to use it in buildHTML:
+                    script.onload = () => run(window.jQuery, data);
+                    document.head.appendChild(script);
+
                 })
                 .catch(err => console.error("Fetch error:", err));
         } else {
-            console.log("Daha önce fetch yapıldı. Beğenilen ürünler yükleniyor.");
+            console.log("Previously fetched. Liked products are being loaded.");
         }
 
         // In this section, I will add the HTML, CSS and event codes I need to add:
-        function run($) {
+        function run($, data) {
             $(() => {
               (() => {
                 const init = () => {
@@ -36,44 +37,58 @@
                 };
         
                 const buildHTML = () => {
-                  const html = `
-                    <div class="banner">
-                        <div class="container-products">
-                            <div class="banner-title-container">
-                                <h2 class="banner-title">Beğenebileceğinizi Düşündüklerimiz</h2>
+                        const html = `
+                            <div class="banner">
+                                <div class="container-products">
+                                    <div class="banner-title-container">
+                                        <h2 class="banner-title">Beğenebileceğinizi Düşündüklerimiz</h2>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="banner-products">
-                                <img />
-                                <div class="product-info"></div>
-                                <div class="product-add-button">Sepete Ekle</div>
-                            </div>
-                        </div>
-                    </div>
-                  `;
-                  $('body').append(html);
+                            `;
+                        $('body').append(html);
+
+                        // I separated it into two different HTML formats. This way, the banner title is not repeated for each product.
+                        data.forEach(product => {
+                            const productHtml = `
+                                <div class="banner-products">
+                                    <img src="${product.img}" alt="${product.name.trim()}" />
+                                    <div class="product-info">
+                                        <div class="product-title">${product.brand} - ${product.name.trim()}</div>
+                                        <div class="product-price">${product.price} TL</div>
+                                    </div>
+                                    <div class="product-add-button">Sepete Ekle</div>
+                                </div>
+                            `;
+                            $('.container-products').append(productHtml);
+                        });
                 };
         
                 const buildCSS = () => {
                   const css = `
-                      .banner {
+                        .banner {
                           padding: 0px 15px;
-                      }
-                      .banner-title-container {
+                        }
+                        .banner-title-container {
                           background-color: #fef6eb;
                           font-family: Quicksand-Bold;
                           padding: 25px 67px;
                           border-top-left-radius: 35px;
                           border-top-right-radius: 35px;
-                      }
-                      .banner-title {
+                        }
+                        .banner-title {
                           color: #f28e00;
                           font-size: 3rem;
-                      }
-                    .product-add-button {
-                      background-color: red;
-                      height: 100px;
-                      width: 100px;
-                    }
+                        }
+                        .banner-products {
+                            width: 100%;
+                            margin: 0 0 20px 3px;
+                            border: 1px solid #ededed;
+                            border-radius: 10px;
+                        }
+                        .product-add-button {
+                            background-color: #f28e00;
+                        }
                   `;
                   $('<style>').html(css).appendTo('head');
                 };
