@@ -35,9 +35,14 @@
               const html = `
                 <div class="banner">
                     <div class="container-products">
-                        <div class="banner-title">Beğenebileceğinizi düşündüklerimiz</div>
-                        <div class="banner-products"></div>
-                        
+                        <div class="banner-title-container">
+                            <h2 class="banner-title">Beğenebileceğinizi Düşündüklerimiz</h2>
+                        </div>
+                        <div class="banner-products">
+                            <img />
+                            <div class="product-info"></div>
+                            <div class="product-add-button">Sepete Ekle</div>
+                        </div>
                     </div>
                 </div>
               `;
@@ -46,7 +51,21 @@
     
             const buildCSS = () => {
               const css = `
-                .container-berfin {
+                  .banner {
+                      padding: 0px 15px;
+                  }
+                  .banner-title-container {
+                      background-color: #fef6eb;
+                      font-family: Quicksand-Bold;
+                      padding: 25px 67px;
+                      border-top-left-radius: 35px;
+                      border-top-right-radius: 35px;
+                  }
+                  .banner-title {
+                      color: #f28e00;
+                      font-size: 3rem;
+                  }
+                .product-add-button {
                   background-color: red;
                   height: 100px;
                   width: 100px;
@@ -56,8 +75,8 @@
             };
     
             const setEvents = () => {
-              $('.container-berfin').on('click', () => {
-                console.log('clicked');
+              $('.product-add-button').on('click', () => {
+                console.log('Product Added.');
               });
             };
     
@@ -67,4 +86,6 @@
   }
 })();
 
-// TODO!: add 'Çok Satan' and 'Yıldız Ürün' PNG into product img.
+// TODO!: 
+//  1- Add 'Çok Satan' and 'Yıldız Ürün' PNG into product img.
+//  2- Add star ratings.
