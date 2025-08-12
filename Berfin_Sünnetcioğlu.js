@@ -2,6 +2,9 @@
   // Check to see if I'm on the Home Page:
   if (window.location.pathname === "/") {
     console.log("You are in the right place!");
+    // This part downloads jQuery and adds it to the page. If I don't do this, my code won't work because the '$' won't be recognized without jQuery:
+    const script = document.createElement('script');
+    script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
 
     // I add a flag to check whether the code is run for the first time or not, this will ensure that it does not fetch twice:
     window.productListFetched = window.productListFetched || false;
@@ -13,17 +16,27 @@
         .then(data => {
           console.log("Product list:", data);
           window.productListFetched = true;
-          // This part downloads jQuery and adds it to the page. If I don't do this, my code won't work because the '$' won't be recognized without jQuery:
-          const script = document.createElement('script');
-          script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+
+          // Add favorite property to each product:
+          const withFav = data.map(p => ({ favorite: false, ...p }));
+
+          localStorage.setItem('ebebek_products', JSON.stringify(withFav));
+          console.log("LocalStorage products:", withFav);
+
           // Added Data to Jquery to use it in buildHTML. In that way I can call the data in run function:
-          script.onload = () => run(window.jQuery, data);
+          script.onload = () => run(window.jQuery, withFav);
           document.head.appendChild(script);
         })
         .catch(err => console.error("Fetch error:", err));
     } else {
       // TODO!: Load products and liked products from local storage
       console.log("Previously fetched. Liked products are being loaded.");
+
+      // Load products and liked products from local storage
+      const storedData = JSON.parse(localStorage.getItem('ebebek_products')) || [];
+      console.log("Product list:", storedData);
+      script.onload = () => run(window.jQuery, storedData);
+      document.head.appendChild(script);
     }
 
     // In this section, I will add the HTML, CSS and event codes I need to add:
@@ -387,40 +400,46 @@
 
             // My second attempt at a carousel design is like this, it is more responsive and works better with the design I made:
             // I define all divs so that I can use them when creating a carousel: -AGAIN-
-            const $track   = $('.products-track');
-            const $banner  = $('.banner');
-            const $btnPrev = $banner.find('.carousel-btn.left');
-            const $btnNext = $banner.find('.carousel-btn.right');
+            // Now when I run it twice the carousel doesn't work. 🤦
+            // I add function to make carousel work for EVERY BANNER:
+            function wireCarousel($banner){
+              const $track   = $banner.find('.products-track');
+              const $btnPrev = $banner.find('.carousel-btn.left');
+              const $btnNext = $banner.find('.carousel-btn.right');
 
-            // I calculated the area covered by only one product so that I could scroll for only one product:
-            const productWidth = () => {
-              const $first = $track.children('.banner-products').eq(0);
-              return Math.round($first[0]?.getBoundingClientRect().width || 0);
+              // I calculated the area covered by only one product so that I could scroll for only one product:
+              const productWidth = () => {
+                const $first = $track.children('.banner-products').eq(0);
+                return Math.round($first[0]?.getBoundingClientRect().width || 0);
+              };
+
+              // I calculate the step size based on the product width and add a margin of 20px to it:
+              const stepPx = () => (productWidth() + 20);
+
+              $btnPrev.off('click.carousel').on('click.carousel', () => {
+                $track[0].scrollBy({ left: -stepPx(), behavior: 'smooth' });
+              });
+              $btnNext.off('click.carousel').on('click.carousel', () => {
+                $track[0].scrollBy({ left:  stepPx(), behavior: 'smooth' });
+              });
+
+              // If I reach the end - left or right - the buttons are disabled:
+              const updateButtons = () => {
+                const el  = $track[0];
+                const max = el.scrollWidth - el.clientWidth;
+                $btnPrev.prop('disabled', el.scrollLeft <= 0);
+                $btnNext.prop('disabled', max <= 0 || el.scrollLeft >= max - 1);
+              };
+
+              $track.on('scroll', updateButtons); // Use updateButtons function while scrolling
+              $(window).on('resize', () => setTimeout(updateButtons, 50)); // If my screen is resized, I need to recalculate
+
+              // And nowwww my carousel is better!
             };
+            $('.banner').each((i, el) => wireCarousel($(el))); // make work carousel for every banner.
+          }
+          
 
-            // I calculate the step size based on the product width and add a margin of 20px to it:
-            const stepPx = () => (productWidth() + 20);
-
-            $btnPrev.off('click.carousel').on('click.carousel', () => {
-              $track[0].scrollBy({ left: -stepPx(), behavior: 'smooth' });
-            });
-            $btnNext.off('click.carousel').on('click.carousel', () => {
-              $track[0].scrollBy({ left:  stepPx(), behavior: 'smooth' });
-            });
-
-            // If I reach the end - left or right - the buttons are disabled:
-            const updateButtons = () => {
-              const el  = $track[0];
-              const max = el.scrollWidth - el.clientWidth;
-              $btnPrev.prop('disabled', el.scrollLeft <= 0);
-              $btnNext.prop('disabled', max <= 0 || el.scrollLeft >= max - 1);
-            };
-
-            $track.on('scroll', updateButtons); // Use updateButtons function while scrolling
-            $(window).on('resize', () => setTimeout(updateButtons, 50)); // If my screen is resized, I need to recalculate
-
-            // And nowwww my carousel is better!
-          };
           init();
         })();
       });
