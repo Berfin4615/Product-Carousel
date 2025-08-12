@@ -120,6 +120,8 @@
                 text-align: center;
                 background: #fff;
                 flex: 0 0 auto;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
               }
               .favorite {
                 position: absolute;
@@ -249,6 +251,12 @@
                 flex-wrap:nowrap;
                 transition: transform 350ms ease;
                 will-change: transform;
+                scroll-snap-type: x mandatory;   
+                scroll-behavior: smooth;
+                overflow-x: auto; 
+              }
+              .products-track::-webkit-scrollbar {
+                display: none; 
               }
               .carousel-btn{
                 position:absolute;
@@ -285,42 +293,79 @@
               $btn.attr('aria-pressed', $btn.hasClass('is-active'));
             });
 
-            // I define all divs so that I can use them when creating a carousel:
-            const $cont = $('.container-products');
-            const $track = $cont.children('.products-track');
-            const $products = $track.children('.banner-products');
-            const $banner = $('.banner');
+            // My first attempt at a carousel design was like this, but it wasn't responsive:
+
+            // // I define all divs so that I can use them when creating a carousel:
+            // const $cont = $('.container-products');
+            // const $track = $cont.children('.products-track');
+            // const $products = $track.children('.banner-products');
+            // const $banner = $('.banner');
+            // const $btnPrev = $banner.find('.carousel-btn.left');
+            // const $btnNext = $banner.find('.carousel-btn.right');
+
+            // const VISIBLE = 5; // How many products should be displayed on the screen?
+            // const STEP = 1; // How many products should be moved when the button is pressed?
+            // let startIndex = 0; // The current index of the first visible product
+
+            // // I use that function for calculating *the exact area a product occupies on the screen*:
+            // const productOuterWidth = () => Math.round($products.eq(0).outerWidth(true));   
+            // const mr = () => 20; // Margin right of products
+            // const maxStartIndex = () => 4.6; // I determined the index that would be on the far right. By trial and error.😅
+
+            // // If I reach the end - left or right - the buttons are disabled:
+            // const updateButtons = () => {
+            //   $btnPrev.prop('disabled', startIndex <= 0);
+            //   $btnNext.prop('disabled', startIndex >= maxStartIndex());
+            // };
+
+            // const goTo = (idx) => { // idx = the index I want to go to
+            //   startIndex = Math.max(0, Math.min(idx, maxStartIndex())); // Keeps the index within the minimum and maximum product range
+            //   const x = -(startIndex * productOuterWidth()); // EXAMPLE: if startIndex = 2, product width = 260px → x = -520px
+            //   $track.css('transform', `translateX(${x}px)`); // Shifts the .products-track element horizontally
+            //   updateButtons();
+            // };
+
+            // $btnPrev.off('click.carousel').on('click.carousel', () => goTo(startIndex - STEP)); // Left arrow: startIndex - STEP → back the specified step
+            // $btnNext.off('click.carousel').on('click.carousel', () => goTo(startIndex + STEP)); // Right arrow: startIndex + STEP → forward by specified step
+
+            // goTo(0); // Start from the first product
+
+            // My second attempt at a carousel design is like this, it is more responsive and works better with the design I made:
+            // I define all divs so that I can use them when creating a carousel: -AGAIN-
+            const $track   = $('.products-track');
+            const $banner  = $('.banner');
             const $btnPrev = $banner.find('.carousel-btn.left');
             const $btnNext = $banner.find('.carousel-btn.right');
 
-            const VISIBLE = 5; // How many products should be displayed on the screen?
-            const STEP = 1; // How many products should be moved when the button is pressed?
-            let startIndex = 0; // The current index of the first visible product
+            // I calculated the area covered by only one product so that I could scroll for only one product:
+            const productWidth = () => {
+              const $first = $track.children('.banner-products').eq(0);
+              return Math.round($first[0]?.getBoundingClientRect().width || 0);
+            };
 
-            // I use that function for calculating *the exact area a product occupies on the screen*:
-            const productOuterWidth = () => Math.round($products.eq(0).outerWidth(true));   
-            const mr = () => 20; // Margin right of products
-            const maxStartIndex = () => 4.6; // I determined the index that would be on the far right. By trial and error.😅
+            // I calculate the step size based on the product width and add a margin of 20px to it:
+            const stepPx = () => (productWidth() + 20);
+
+            $btnPrev.off('click.carousel').on('click.carousel', () => {
+              $track[0].scrollBy({ left: -stepPx(), behavior: 'smooth' });
+            });
+            $btnNext.off('click.carousel').on('click.carousel', () => {
+              $track[0].scrollBy({ left:  stepPx(), behavior: 'smooth' });
+            });
 
             // If I reach the end - left or right - the buttons are disabled:
             const updateButtons = () => {
-              $btnPrev.prop('disabled', startIndex <= 0);
-              $btnNext.prop('disabled', startIndex >= maxStartIndex());
+              const el  = $track[0];
+              const max = el.scrollWidth - el.clientWidth;
+              $btnPrev.prop('disabled', el.scrollLeft <= 0);
+              $btnNext.prop('disabled', max <= 0 || el.scrollLeft >= max - 1);
             };
 
-            const goTo = (idx) => { // idx = the index I want to go to
-              startIndex = Math.max(0, Math.min(idx, maxStartIndex())); // Keeps the index within the minimum and maximum product range
-              const x = -(startIndex * productOuterWidth()); // EXAMPLE: if startIndex = 2, product width = 260px → x = -520px
-              $track.css('transform', `translateX(${x}px)`); // Shifts the .products-track element horizontally
-              updateButtons();
-            };
+            $track.on('scroll', updateButtons); // Use updateButtons function while scrolling
+            $(window).on('resize', () => setTimeout(updateButtons, 50)); // If my screen is resized, I need to recalculate
 
-            $btnPrev.off('click.carousel').on('click.carousel', () => goTo(startIndex - STEP)); // Left arrow: startIndex - STEP → back the specified step
-            $btnNext.off('click.carousel').on('click.carousel', () => goTo(startIndex + STEP)); // Right arrow: startIndex + STEP → forward by specified step
-
-            goTo(0); // Start from the first product
+            // And nowwww my carousel is better!
           };
-
           init();
         })();
       });
