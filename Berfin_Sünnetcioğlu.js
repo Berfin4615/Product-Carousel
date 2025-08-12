@@ -46,12 +46,12 @@
                   <div class="container-products">
                     <div class="products-track"></div>
                   </div>
-                  <button class="carousel-btn left" aria-label="Önceki ürün">
+                  <button class="carousel-btn left" aria-label="Prev">
                     <svg class="chev" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M15 4 L7 12 L15 20" />
                     </svg>
                   </button>
-                  <button class="carousel-btn right" aria-label="Sonraki ürün">
+                  <button class="carousel-btn right" aria-label="Next">
                     <svg class="chev" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M9 4 L17 12 L9 20" />
                     </svg>
@@ -62,6 +62,24 @@
             $('body').append(html);
             // I created the HTML where the products are displayed separately and added it to the main HTML so that the titles and buttons for each product will not be repeated:
             data.forEach(product => {
+              // I create priceHTML separately to calculate discount:
+              let priceHtml = `
+                <span class="price-regular"><b>${product.price} TL</b></span>`; // If price is stable then I just add product price
+
+              // If there is a discount:
+              if (product.original_price && product.original_price > product.price) {  
+                // Calculate discount percent:
+                const discountAmount = product.original_price - product.price;
+                const discountPercent = Math.round((discountAmount / product.original_price) * 100);
+
+                // Add different HTML elements for discounted prices to design different in CSS:
+                priceHtml = `
+                  <span class="price-old">${product.original_price} TL</span>
+                  <span class="discount-badge"><b>%${discountPercent}</b><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Eo_circle_green_arrow-down.svg/1200px-Eo_circle_green_arrow-down.svg.png" alt="Discount Icon" class="discount-icon"/></span>
+                  <span class="price-new"><b>${product.price} TL</b></span>
+                `;
+              }
+
               const productHtml = `
                 <div class="banner-products">
                   <a href="${product.url}">
@@ -73,7 +91,7 @@
                     <img class="product-image" src="${product.img}" alt="${product.name.trim()}" />
                     <div class="product-info">
                       <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
-                      <div class="product-price"><b>${product.price} TL</b></div>
+                      <div class="product-price">${priceHtml}</div>
                     </div>
                   </a>
                   <div class="product-add-button"><b>Sepete Ekle</b></div>
@@ -183,8 +201,18 @@
                 font-family: Poppins,"cursive";
                 text-align: start;
               }
-              .product-title { margin-bottom: 10px; color: #686868;}
-              .product-price { color: #686868; font-size: 2.2rem; }
+              .product-title { 
+                margin-bottom: 10px; 
+                color: #686868;
+                
+              }
+              .product-price { 
+                color: #686868; 
+                font-size: 2.2rem; 
+                display: flex;
+                align-items: baseline; 
+                flex-wrap: wrap;
+              }
               .padding-before-button { min-height: 70px; }
               .product-add-button {
                 display: block;
@@ -241,9 +269,8 @@
                 cursor:default;
                 transform:translateY(-50%);
               }
-              @media (max-width: 480px){
-                .carousel-btn{ height:48px; width:48px; }
-                .carousel-btn .chev{ width:20px; height:20px; }
+              @media (max-width: 768px){
+                .carousel-btn{ display:none !important; }
               }
               .product-add-button:hover { color: white; background-color: #f28e00; cursor: pointer; }
               .products-track{
@@ -276,7 +303,35 @@
               .carousel-btn.right{ right:-45px; }
               .carousel-btn:hover{ background:rgba(0,0,0,.14); }
               .carousel-btn:disabled{ opacity:.35; cursor:default; }
-              .carousel-btn .arrow{ font-size:24px; line-height:1; }`;
+              .carousel-btn .arrow{ font-size:24px; line-height:1; }
+              .price-old{
+                text-decoration: line-through;
+                font-size: 1.4rem;
+              }
+              .discount-badge {
+                color: #00a365;
+                display: inline-flex;
+                font-size: 18px;
+                justify-content: center;
+                align-items: center;
+              }
+              .discount-icon{
+                width: 18px !important;
+                height: 18px !important;
+              }
+              .price-new {
+                color: #00a365;
+                font-size: 2.2rem;
+                display: block;
+                width: 100%;
+              }
+              .price-regular{
+                font-size: 2.2rem;
+                display: block;
+                width: 100%;
+                margin-top: auto;
+              }
+            `;
             $('<style>').html(css).appendTo('head');
           };
 
