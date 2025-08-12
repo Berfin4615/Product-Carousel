@@ -104,15 +104,17 @@
 
                 // Add different HTML elements for discounted prices to design different in CSS:
                 priceHtml = `
-                  <span class="price-old">${product.original_price} TL</span>
-                  <span class="discount-badge"><b>%${discountPercent}</b><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Eo_circle_green_arrow-down.svg/1200px-Eo_circle_green_arrow-down.svg.png" alt="Discount Icon" class="discount-icon"/></span>
+                  <div class="discount-info">
+                    <span class="price-old">${product.original_price} TL</span>
+                    <span class="discount-badge"><b>%${discountPercent}</b><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Eo_circle_green_arrow-down.svg/1200px-Eo_circle_green_arrow-down.svg.png" alt="Discount Icon" class="discount-icon"/></span>
+                  </div>
                   <span class="price-new"><b>${product.price} TL</b></span>
                 `;
               }
 
               const productHtml = `
                 <div class="banner-products">
-                  <a href="${product.url}">
+                  <a href="${product.url}" target="_blank">
                     <div class="favorite">
                       <img class="default-heart" src="assets/svg/default-favorite.svg" />
                       <img class="hover-heart" src="assets/svg/default-hover-favorite.svg" />
@@ -121,9 +123,17 @@
                     <img class="product-image" src="${product.img}" alt="${product.name.trim()}" />
                     <div class="product-info">
                       <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
+                      <div class="stars">
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                      </div>
                       <div class="product-price">${priceHtml}</div>
                     </div>
                   </a>
+                  <div class="padding-before-button"></div>
                   <div class="product-add-button"><b>Sepete Ekle</b></div>
                 </div>`;
               $('.products-track').append(productHtml);
@@ -157,19 +167,19 @@
                 margin-top: 20px;
                 margin-bottom: 20px;
                 width: 250px;
-                min-height:400px;
-                position:relative;
                 border: 1px solid #ededed;
                 border-radius: 10px;
                 display: flex;
-                flex-direction:column;
-                justify-content:space-between;
+                position: relative;
+                flex-direction: column;
+                justify-content: space-between;
                 padding: 5px;
                 text-align: center;
                 background: #fff;
                 flex: 0 0 auto;
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
+                box-sizing: border-box; 
               }
               .favorite {
                 position: absolute;
@@ -212,10 +222,14 @@
               .favorite:hover .hover-heart { display: block; }
               .favorite.is-active .added-heart { display: block; }
               .product-image {
-                margin-bottom:45px;
+                margin-bottom:65px;
               }
-              .banner-products:hover { border: 3px solid #f28e00; cursor: pointer; }
-              .product-image { margin-bottom:45px; }
+              .banner-products:hover { 
+                border: 1px solid #f28e00; 
+                outline: 3px solid #f28e00; 
+                outline-offset: -3px;
+                cursor: pointer; 
+              }
               .banner-title-container {
                 background-color: #fef6eb;
                 font-family: Quicksand-Bold;
@@ -225,8 +239,7 @@
               }
               .banner-title { color: #f28e00; font-size: 3rem; padding-left: 15px;}
               .product-info {
-                min-height: 70px; 
-                padding: 0 20px 20px;
+                padding: 0 17px 17px;
                 font-size: 12px;
                 font-family: Poppins,"cursive";
                 text-align: start;
@@ -234,19 +247,25 @@
               .product-title { 
                 margin-bottom: 10px; 
                 color: #686868;
-                
+                font-size: 1.2rem;
+                height: 42px;
+              }
+              .stars {
+                padding: 0 0 0;
               }
               .product-price { 
+                position: relative;
                 color: #686868; 
                 font-size: 2.2rem; 
-                display: flex;
-                align-items: baseline; 
-                flex-wrap: wrap;
+                height: 56px;
+                display: block;
+                min-height: 56px;
               }
-              .padding-before-button { min-height: 70px; }
+              .padding-before-button { min-height: 50px; }
               .product-add-button {
                 display: block;
                 margin: 15px auto;
+                margin-top: 0;
                 padding: 10px;
                 width: 200px;
                 color: #f28e00;
@@ -260,7 +279,8 @@
                 position:absolute;
                 top:50%;
                 transform:translateY(-50%);
-                height:56px; width:56px;
+                height:56px; 
+                width:56px;
                 border-radius:50%;
                 border:none;
                 background:#FFF7EC;
@@ -315,20 +335,6 @@
               .products-track::-webkit-scrollbar {
                 display: none; 
               }
-              .carousel-btn{
-                position:absolute;
-                top:50%;
-                transform:translateY(-50%);
-                height:48px; width:48px;
-                border-radius:50%;
-                border:none;
-                background:#fef6eb;
-                cursor:pointer;
-                z-index:10;
-                display:grid;
-                place-items:center;
-                user-select:none;
-              }
               .carousel-btn.left{ left:-45px; }
               .carousel-btn.right{ right:-45px; }
               .carousel-btn:hover{ background:rgba(0,0,0,.14); }
@@ -340,7 +346,7 @@
               }
               .discount-badge {
                 color: #00a365;
-                display: inline-flex;
+                display: flex !important;
                 font-size: 18px;
                 justify-content: center;
                 align-items: center;
@@ -349,17 +355,34 @@
                 width: 18px !important;
                 height: 18px !important;
               }
+              .discount-info {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              }
               .price-new {
+                position: absolute;
+                bottom: 0;
+                left: 0;
                 color: #00a365;
+                font-size: 2.2rem;
+                display: block !important;
+                width: 100% !important;
+              }
+              .price-regular{
+                position: absolute;
+                bottom: 0;
+                left: 0;
                 font-size: 2.2rem;
                 display: block;
                 width: 100%;
               }
-              .price-regular{
-                font-size: 2.2rem;
-                display: block;
-                width: 100%;
-                margin-top: auto;
+              .star{
+                font-size: 24px;
+                color: #686868;
               }
             `;
             $('<style>').html(css).appendTo('head');
