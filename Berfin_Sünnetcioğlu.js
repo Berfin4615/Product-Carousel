@@ -38,13 +38,30 @@
       script.onload = () => run(window.jQuery, storedData);
       document.head.appendChild(script);
     }
-
+    // I should check favorites when I run code everytime:
+    const markFavorites = () => {
+      const storedData = JSON.parse(localStorage.getItem('ebebek_products')) || [];
+      storedData.forEach(p => {
+        if (p.favorite) { // If favorite value in data is true:
+          $('.banner-products').each(function () {
+            const $thisProduct = $(this);
+            const thisUrl = $thisProduct.find('a').attr('href');
+            if (thisUrl === p.url) {
+              $thisProduct.find('.favorite')
+                .addClass('is-active')
+                .attr('aria-pressed', true);  // Add is-active class to that product's favorite part of HTML 
+            }
+          });
+        }
+      });
+    };
     // In this section, I will add the HTML, CSS and event codes I need to add:
     function run($, data) {
       $(() => {
         (() => {
           const init = () => {
             buildHTML();
+            markFavorites();
             buildCSS();
             setEvents();
           };
@@ -353,12 +370,34 @@
               console.log('Product Added.');
             });
             // When the favorite button is clicked, I activate the class so that the svg added in the design becomes visible in CSS:
-            $('.container-products').on('click', '.favorite', function (e) {
-              e.preventDefault();
-              e.stopPropagation();
-              const $btn = $(this);
-              $btn.toggleClass('is-active');
-              $btn.attr('aria-pressed', $btn.hasClass('is-active'));
+            // $('.container-products').on('click', '.favorite', function (e) { //When I do this, only the first favorite buttons work.
+            $('.banner').each((i, el) => {
+              const $banner = $(el);
+              $banner.off('click.favorite').on('click.favorite', '.favorite', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const $btn = $(this);
+                $btn.toggleClass('is-active');
+                $btn.attr('aria-pressed', $btn.hasClass('is-active'));
+                
+                // Get stored data:
+                let storedData = JSON.parse(localStorage.getItem('ebebek_products')) || [];
+
+                // Decide product from unique url:
+                const productUrl = $btn.closest('.banner-products').find('a').attr('href');
+
+                // If product url is matched with the class is-active, change favorite value to true:
+                storedData = storedData.map(p => {
+                  if (p.url === productUrl) {
+                    return { ...p, favorite: $btn.hasClass('is-active') };
+                  }
+                  return p;
+                });
+
+                // Update local storage:
+                localStorage.setItem('ebebek_products', JSON.stringify(storedData));
+                console.log("Updated favorites:", storedData);
+              });
             });
 
             // My first attempt at a carousel design was like this, but it wasn't responsive:
