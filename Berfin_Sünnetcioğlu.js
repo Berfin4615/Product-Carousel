@@ -51,13 +51,15 @@
                         data.forEach(product => {
                             const productHtml = `
                                 <div class="banner-products">
-                                    <img class="product-image" src="${product.img}" alt="${product.name.trim()}" />
-                                    <div class="product-info">
-                                        <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
-                                        <div class="product-price"><b>${product.price} TL</b></div>
-                                    </div>
-                                    <div class="padding-before-button"></div>
-                                    <div class="product-add-button"><b>Sepete Ekle</b></div>
+                                <a href="${product.url}">
+                                        <img class="product-image" src="${product.img}" alt="${product.name.trim()}" />
+                                        <div class="product-info">
+                                            <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
+                                            <div class="product-price"><b>${product.price} TL</b></div>
+                                        </div>
+                                        <div class="padding-before-button"></div>
+                                        <div class="product-add-button"><b>Sepete Ekle</b></div>
+                                    </a>
                                 </div>
                             `;
                             $('.container-products').append(productHtml);
@@ -92,6 +94,10 @@
                             padding: 5px;
                             text-align: center;
                         }
+                        .banner-products:hover {
+                            border: 3px solid #f28e00;
+                            cursor: pointer;
+                        }
                         .product-image {
                             margin-bottom:45px;
                         }
@@ -108,7 +114,7 @@
                         }
                         .product-info {
                             min-height: 70px; 
-                            padding: 0 17px 17px;
+                            padding: 0 20px 20px;
                             font-size: 12px;
                             font-family: Poppins,"cursive";
                             text-align: start;
@@ -122,7 +128,7 @@
                             font-size: 2.2rem;
                         }
                         .padding-before-button {
-                            height: 70px;
+                            min-height: 70px;
                         }
                         .product-add-button {
                             display: block;
