@@ -52,14 +52,18 @@
                             const productHtml = `
                                 <div class="banner-products">
                                 <a href="${product.url}">
+                                        <div class="favorite">
+                                            <img class="default-heart" src="assets/svg/default-favorite.svg" />
+                                            <img class="hover-heart" src="assets/svg/default-hover-favorite.svg" />
+                                        </div>
                                         <img class="product-image" src="${product.img}" alt="${product.name.trim()}" />
                                         <div class="product-info">
                                             <div class="product-title"><b>${product.brand} -</b> ${product.name} </div>
                                             <div class="product-price"><b>${product.price} TL</b></div>
                                         </div>
                                         <div class="padding-before-button"></div>
-                                        <div class="product-add-button"><b>Sepete Ekle</b></div>
                                     </a>
+                                    <div class="product-add-button"><b>Sepete Ekle</b></div>
                                 </div>
                             `;
                             $('.container-products').append(productHtml);
@@ -88,16 +92,55 @@
                             margin-top: 20px;
                             margin-bottom: 20px;
                             width: 250px;
+                            min-height:400px;
                             border: 1px solid #ededed;
                             border-radius: 10px;
-                            display: block;
+                            display: flex;
+                            flex-direction:column;
+                            justify-content:space-between;
                             padding: 5px;
                             text-align: center;
+                            position: relative;   
+                            z-index: 0; 
                         }
                         .banner-products:hover {
                             border: 3px solid #f28e00;
                             cursor: pointer;
                         }
+                        .favorite {
+                          position: absolute;
+                          right: 15px;
+                          top: 10px;
+                          width: 40px;                      
+                          height: 40px;                     
+                          display: grid;                    
+                          place-items: center;             
+                          background-color: #fff;
+                          border-radius: 50%;
+                          box-shadow: 0 2px 4px 0 #00000024;
+                          z-index: 2;                      
+                        }
+                        
+                        .default-heart{
+                          position: absolute;
+                          width: 20px !important;
+                          height: 20px !important;
+                          inset: 0;                        
+                          margin: auto;
+                          display: block;                   
+                        }
+                        
+                        .hover-heart {
+                          position: absolute;
+                          width: 20px;
+                          height: 20px;
+                          inset: 0;
+                          margin: auto;
+                          display: none;                    
+                        }
+                        
+                        .favorite:hover .default-heart { display: none; }
+                        .favorite:hover .hover-heart { display: block; }
                         .product-image {
                             margin-bottom:45px;
                         }
