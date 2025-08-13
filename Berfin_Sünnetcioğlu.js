@@ -578,3 +578,7 @@
     console.log("Wrong Page!");
   }
 })();
+
+// TODO!: 
+//  1- Add 'Çok Satan' and 'Yıldız Ürün' PNG into product img.
+//  2- Add star ratings.
