@@ -1,3 +1,4 @@
+// All the comment lines are mine🤗, not AI's🥲. I wanted to explain the process in a more entertaining and readable way.
 (() => {
   // Check to see if I'm on the Home Page:
   if (window.location.pathname === "/") {
@@ -29,7 +30,7 @@
         })
         .catch(err => console.error("Fetch error:", err));
     } else {
-      // TODO!: Load products and liked products from local storage
+      // TODO!: Load products and liked products from local storage ✅
       console.log("Previously fetched. Liked products are being loaded.");
 
       // Load products and liked products from local storage
@@ -90,6 +91,7 @@
               </div>
             `;
             $('body').append(html);
+
             // I created the HTML where the products are displayed separately and added it to the main HTML so that the titles and buttons for each product will not be repeated:
             data.forEach(product => {
               // I create priceHTML separately to calculate discount:
@@ -111,7 +113,7 @@
                   <span class="price-new"><b>${product.price} TL</b></span>
                 `;
               }
-
+              // There is just star placeholders.
               const productHtml = `
                 <div class="banner-products">
                   <a href="${product.url}" target="_blank">
@@ -140,14 +142,32 @@
             });
           };
 
+          // The part that challenging me the most is the CSS part 😭:
           const buildCSS = () => {
             const css = `
+              /* Container that contain carousel items */
               .banner {
                 padding: 0px 15px;
                 width: 100%;
-                margin-bottom: 1000px;
                 position: relative;
+                margin-bottom: 200px;
               }
+
+              /* "Beğenebileceğinizi Düşündüklerimiz" title design for banner */
+              .banner-title-container {
+                background-color: #fef6eb;
+                font-family: Quicksand-Bold;
+                padding: 25px 10px;
+                border-top-left-radius: 35px;
+                border-top-right-radius: 35px;
+              }
+              .banner-title { 
+                color: #f28e00; 
+                font-size: 3rem; 
+                padding-left: 15px;
+              }
+
+              /* Important design codes for the Carousel to be scrollable */
               .container-products {
                 display: flex;
                 flex-wrap: nowrap;
@@ -162,6 +182,20 @@
                 width: 100%;
                 margin: 0 auto;
               }
+              .products-track{
+                display:flex;
+                flex-wrap:nowrap;
+                transition: transform 350ms ease;
+                will-change: transform;
+                scroll-snap-type: x mandatory;   
+                scroll-behavior: smooth;
+                overflow-x: auto; 
+              }
+              .products-track::-webkit-scrollbar {
+                display: none; 
+              }
+
+              /* Design for each product in the carousel */
               .banner-products {
                 margin-right: 20px;
                 margin-top: 20px;
@@ -181,6 +215,15 @@
                 scroll-snap-stop: always;
                 box-sizing: border-box; 
               }
+              .banner-products:hover { 
+                border: 1px solid #f28e00; 
+                outline: 3px solid #f28e00; 
+                outline-offset: -3px;
+                cursor: pointer; 
+              }
+
+              /* 💖 Favorite button design */
+              /* There are three different favorite heart images that appear and disappear depending on the situation: */
               .favorite {
                 position: absolute;
                 right: 15px;
@@ -221,23 +264,14 @@
               .favorite:hover .default-heart { display: none; }
               .favorite:hover .hover-heart { display: block; }
               .favorite.is-active .added-heart { display: block; }
+
+              /* Just to be sure the space after the image and size of it */
               .product-image {
                 margin-bottom:65px;
+                width: 100%;
               }
-              .banner-products:hover { 
-                border: 1px solid #f28e00; 
-                outline: 3px solid #f28e00; 
-                outline-offset: -3px;
-                cursor: pointer; 
-              }
-              .banner-title-container {
-                background-color: #fef6eb;
-                font-family: Quicksand-Bold;
-                padding: 25px 10px;
-                border-top-left-radius: 35px;
-                border-top-right-radius: 35px;
-              }
-              .banner-title { color: #f28e00; font-size: 3rem; padding-left: 15px;}
+              
+              /* Product info including product title, stars and price */
               .product-info {
                 padding: 0 17px 17px;
                 font-size: 12px;
@@ -248,11 +282,19 @@
                 margin-bottom: 10px; 
                 color: #686868;
                 font-size: 1.2rem;
-                height: 42px;
+                height: 50px;
+                overflow: hidden;
               }
               .stars {
                 padding: 0 0 0;
               }
+              /* My stars were blue I had to do this 🥹 */
+              .star{
+                font-size: 24px;
+                color: #686868;
+              }
+
+              /* The easy part of the picture: */
               .product-price { 
                 position: relative;
                 color: #686868; 
@@ -261,6 +303,50 @@
                 display: block;
                 min-height: 56px;
               }
+              .price-regular{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                font-size: 2.2rem;
+                display: block;
+                width: 100%;
+              }
+
+              /* The painful part of the picture 🌶️ */
+              .discount-info {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              }
+              .price-old{
+                text-decoration: line-through;
+                font-size: 1.4rem;
+              }
+              .discount-badge {
+                color: #00a365;
+                display: flex !important;
+                font-size: 18px;
+                justify-content: center;
+                align-items: center;
+              }
+              .discount-icon{
+                width: 18px !important;
+                height: 18px !important;
+              }
+              .price-new {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                color: #00a365;
+                font-size: 2.2rem;
+                display: block !important;
+                width: 100% !important;
+              }
+              
+              /* "Sepete Ekle" button: 🧺 */
               .padding-before-button { min-height: 50px; }
               .product-add-button {
                 display: block;
@@ -275,6 +361,13 @@
                 font-family: Poppins,"cursive";
                 text-align: center;
               }
+              .product-add-button:hover { 
+                color: white; 
+                background-color: #f28e00; 
+                cursor: pointer; 
+              }
+
+              /* Carousel buttons 🎠: */
               .carousel-btn{
                 position:absolute;
                 top:50%;
@@ -319,71 +412,46 @@
                 cursor:default;
                 transform:translateY(-50%);
               }
-              @media (max-width: 768px){
-                .carousel-btn{ display:none !important; }
-              }
-              .product-add-button:hover { color: white; background-color: #f28e00; cursor: pointer; }
-              .products-track{
-                display:flex;
-                flex-wrap:nowrap;
-                transition: transform 350ms ease;
-                will-change: transform;
-                scroll-snap-type: x mandatory;   
-                scroll-behavior: smooth;
-                overflow-x: auto; 
-              }
-              .products-track::-webkit-scrollbar {
-                display: none; 
-              }
               .carousel-btn.left{ left:-45px; }
               .carousel-btn.right{ right:-45px; }
               .carousel-btn:hover{ background:rgba(0,0,0,.14); }
               .carousel-btn:disabled{ opacity:.35; cursor:default; }
               .carousel-btn .arrow{ font-size:24px; line-height:1; }
-              .price-old{
-                text-decoration: line-through;
-                font-size: 1.4rem;
-              }
-              .discount-badge {
-                color: #00a365;
-                display: flex !important;
-                font-size: 18px;
-                justify-content: center;
-                align-items: center;
-              }
-              .discount-icon{
-                width: 18px !important;
-                height: 18px !important;
-              }
-              .discount-info {
-                position: absolute;
-                top: 0;
-                left: 0;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-              }
-              .price-new {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                color: #00a365;
-                font-size: 2.2rem;
-                display: block !important;
-                width: 100% !important;
-              }
-              .price-regular{
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                font-size: 2.2rem;
-                display: block;
-                width: 100%;
-              }
-              .star{
-                font-size: 24px;
-                color: #686868;
-              }
+
+              /* Media Queries 📱 */
+              @media (max-width: 480px){
+                .banner-title-container {
+                  background: #fff;
+                  padding: 0 22px 0 10px;
+                }
+                .banner-title { 
+                  color: #f28e00; 
+                  font-size: 1.7rem; 
+                  padding: 0;
+                }
+                .banner-products {
+                  width: 175px;
+                }
+                .product-title {
+                  overflow: auto;
+                  height: 40px;
+                }
+                .product-price { 
+                  font-size: 1.8rem; 
+                }
+                .price-regular{
+                  font-size: 1.8rem;
+                }
+                .price-new {
+                  font-size: 1.8rem;
+                }
+                .product-add-button {
+                  width: 140px;
+                }
+                .carousel-btn{ 
+                  display:none !important; 
+                }
+              } 
             `;
             $('<style>').html(css).appendTo('head');
           };
