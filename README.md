@@ -6,8 +6,7 @@ A lightweight and responsive **product carousel** built with pure **HTML, CSS, a
 
 ## 🎥 Demo
 
-https://github.com/Berfin4615/Product-Carousel/assets/demo-carousel.gif
-
+![Carousel Demo](assets/demo-carousel.gif)
 > ⏯️ This is a screen recording of the carousel in action — fully responsive and written from scratch.
 
 ---
